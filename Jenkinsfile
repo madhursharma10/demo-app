@@ -20,9 +20,23 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    mvn sonar:sonar \
+                    -Dsonar.projectKey=demo-app \
+                    -Dsonar.projectName=demo-app
+                    '''
+                }
+            }
+        }
+
         stage('Deploy to Tomcat') {
             steps {
-                sh 'cp target/demo-app.war /opt/tomcat/webapps/'
+                sh '''
+                cp target/demo-app.war /opt/tomcat/webapps/
+                '''
             }
         }
     }
